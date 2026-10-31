@@ -6,7 +6,6 @@ from app.config import Settings
 from app.main import create_app
 from app.providers.client import ProviderResult
 
-
 PUBLIC = {"task_kind": "explanation", "classification": "public", "prompt": "Weather?"}
 
 
