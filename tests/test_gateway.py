@@ -23,7 +23,8 @@ def test_health_and_dry_run_plan():
 
 
 def test_sensitive_routes_local_only():
-    with TestClient(create_app(Settings(enable_local_routing=False, enable_azure_routing=True))) as c:
+    config = Settings(enable_local_routing=False, enable_azure_routing=True)
+    with TestClient(create_app(config)) as c:
         answer = c.post("/api/v1/route/plan", json={**PUBLIC, "classification": "restricted"})
         assert answer.status_code == 403
         assert "No approved route" in answer.json()["detail"]
@@ -31,7 +32,8 @@ def test_sensitive_routes_local_only():
 
 def test_complex_public_requires_configured_cloud_route():
     with TestClient(create_app(Settings())) as c:
-        assert c.post("/api/v1/route/plan", json={**PUBLIC, "task_kind": "complex_analysis"}).status_code == 403
+        result = c.post("/api/v1/route/plan", json={**PUBLIC, "task_kind": "complex_analysis"})
+        assert result.status_code == 403
     with TestClient(create_app(Settings(enable_azure_routing=True))) as c:
         plan = c.post("/api/v1/route/plan", json={**PUBLIC, "task_kind": "complex_analysis"})
         assert plan.status_code == 200
@@ -83,4 +85,5 @@ def test_live_azure_config_rejects_non_https():
 
 def test_invalid_extra_fields_rejected():
     with TestClient(create_app(Settings())) as c:
-        assert c.post("/api/v1/route/plan", json={**PUBLIC, "access_token": "bad"}).status_code == 422
+        result = c.post("/api/v1/route/plan", json={**PUBLIC, "access_token": "bad"})
+        assert result.status_code == 422

@@ -63,6 +63,8 @@ async def call_azure(task: InferenceTask, config: Settings) -> ProviderResult:
             if not isinstance(content, str):
                 raise ValueError("Invalid provider response")
             usage = data.get("usage") or {}
-            return ProviderResult(content, usage.get("prompt_tokens"), usage.get("completion_tokens"))
+            return ProviderResult(
+                content, usage.get("prompt_tokens"), usage.get("completion_tokens")
+            )
     except (httpx.HTTPError, IndexError, KeyError, ValueError, TypeError) as exc:
         raise ProviderError("Cloud model request failed") from exc

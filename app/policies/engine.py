@@ -35,7 +35,10 @@ def choose_route(task: InferenceTask, settings: Settings) -> RouteDecision:
             return RouteDecision(
                 route=route,
                 model=model,
-                reason=f"Allowed by static {task.classification.value}/{task.task_kind.value} policy",
+                reason=(
+                    f"Allowed by static {task.classification.value}/"
+                    f"{task.task_kind.value} policy"
+                ),
                 estimated_cost_usd=cost,
                 executable=settings.enable_live_execution,
             )
