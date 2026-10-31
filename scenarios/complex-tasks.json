@@ -1,0 +1,18 @@
+[
+  {
+    "id": "complex-001",
+    "synthetic": true,
+    "task_kind": "complex_analysis",
+    "classification": "public",
+    "prompt": "Compare two fictional rainfall scenarios with explicit evidence.",
+    "expected_route_default": "denied_when_cloud_disabled"
+  },
+  {
+    "id": "complex-002",
+    "synthetic": true,
+    "task_kind": "explanation",
+    "classification": "internal",
+    "prompt": "Summarize a made-up internal engineering report.",
+    "expected_route_default": "local"
+  }
+]

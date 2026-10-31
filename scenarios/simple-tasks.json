@@ -1,0 +1,18 @@
+[
+  {
+    "id": "simple-001",
+    "synthetic": true,
+    "task_kind": "explanation",
+    "classification": "public",
+    "prompt": "Explain why strong wind can affect outdoor events.",
+    "expected_route_default": "local"
+  },
+  {
+    "id": "simple-002",
+    "synthetic": true,
+    "task_kind": "deterministic",
+    "classification": "public",
+    "prompt": "Calculate a pre-defined risk score in the owning application.",
+    "expected_route_default": "none"
+  }
+]
