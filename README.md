@@ -68,4 +68,8 @@ python -m pytest -q
 
 [Architecture](docs/architecture.md) · [Evaluation plan](docs/evaluation-plan.md) · [Routing ADR](docs/decisions/ADR-001-routing-and-cost.md).
 
+## Contributing and commits
+
+Every new commit must use a [Gitmoji](https://gitmoji.dev/) appropriate to its purpose; see [CONTRIBUTING.md](CONTRIBUTING.md). Coding agents must also follow [AGENTS.md](AGENTS.md). Existing commit SHAs are not rewritten merely to change commit titles.
+
 MIT-licensed code; model/service licenses are separate.
