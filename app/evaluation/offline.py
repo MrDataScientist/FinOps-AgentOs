@@ -13,7 +13,7 @@ import json
 import os
 import platform
 import statistics
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from time import perf_counter_ns
 
@@ -115,7 +115,7 @@ async def run_offline_evaluation(scenario_dir: Path) -> dict:
     return {
         "metadata": {
             "evaluation_scope": EVALUATION_MODE,
-            "utc_timestamp": datetime.now(timezone.utc).isoformat(),
+            "utc_timestamp": datetime.now(UTC).isoformat(),
             "code_sha": os.getenv("GITHUB_SHA", "local-uncommitted-or-unspecified"),
             "python_version": platform.python_version(),
             "scenario_sha256": fixture_sha,
