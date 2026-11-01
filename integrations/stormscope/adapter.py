@@ -15,7 +15,11 @@ class RiskEvidence(BaseModel):
     location_name: str = Field(min_length=1, max_length=100)
 
 
-def explanation_task(evidence: RiskEvidence) -> InferenceTask:
+def explanation_task(
+    evidence: RiskEvidence,
+    *,
+    classification: DataClassification = DataClassification.INTERNAL,
+) -> InferenceTask:
     """Explanation-only task; caller must validate output against original risk facts.
 
     Conceptual integration, not a drop-in Stormscope API contract.
@@ -31,7 +35,7 @@ def explanation_task(evidence: RiskEvidence) -> InferenceTask:
     )
     return InferenceTask(
         task_kind=TaskKind.EXPLANATION,
-        classification=DataClassification.PUBLIC,
+        classification=classification,
         prompt=prompt,
         max_estimated_cost_usd=Decimal("0.10"),
     )

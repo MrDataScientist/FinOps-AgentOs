@@ -15,6 +15,12 @@ def choose_route(task: InferenceTask, settings: Settings) -> RouteDecision:
             estimated_cost_usd=0,
         )
 
+    if (
+        task.task_kind is TaskKind.COMPLEX_ANALYSIS
+        and task.classification is not DataClassification.PUBLIC
+    ):
+        raise PolicyDenied("No quality-qualified model for sensitive complex analysis")
+
     if task.classification is not DataClassification.PUBLIC:
         candidates = ["local"]
     elif task.task_kind is TaskKind.COMPLEX_ANALYSIS:

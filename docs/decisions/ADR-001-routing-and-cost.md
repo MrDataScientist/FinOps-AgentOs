@@ -9,7 +9,7 @@ Model routes determine privacy exposure and financial consequences. A probabilis
 
 ## Decision
 
-Use explicit task-kind, classification and illustrative-budget gates; default to dry-run. Internal and restricted data route locally only; if no eligible route exists, return a policy denial. Complex public tasks require explicitly enabled cloud routing. Keep real inference separately opt-in and protected by an API key. No implicit cloud escalation. Return model outputs as unvalidated until checked by the calling application.
+Use explicit task-kind, classification and illustrative-budget gates; default to dry-run. Internal and restricted data route locally only; if no eligible route exists, return a policy denial. Complex public tasks require explicitly enabled cloud routing. Complex internal/restricted tasks are denied until a qualified, explicitly approved private model route exists. Keep real inference separately opt-in and protected by an API key. No implicit cloud escalation. Return model outputs as unvalidated until checked by the calling application.
 
 ## Alternatives rejected
 

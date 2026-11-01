@@ -58,3 +58,11 @@ def test_approval_gate():
     with pytest.raises(HumanApprovalRequired):
         require_approval(approved_by_human=False)
     require_approval(approved_by_human=True)
+
+
+def test_sensitive_complex_requires_qualified_model_even_when_local_available():
+    with pytest.raises(PolicyDenied, match="quality-qualified"):
+        choose_route(
+            task(kind=TaskKind.COMPLEX_ANALYSIS, classification=DataClassification.RESTRICTED),
+            Settings(enable_local_routing=True),
+        )
