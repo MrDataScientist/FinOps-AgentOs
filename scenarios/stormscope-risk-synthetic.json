@@ -1,0 +1,37 @@
+{
+  "data_origin": "synthetic",
+  "scenario_id": "stormscope-synthetic-munich-wind-001",
+  "disclaimer": "Invented decision-shaped fixture, not a real storm, warning, or scientific validation.",
+  "weather_risk_response": {
+    "question": "What is the risk in Munich during this synthetic storm?",
+    "location": "Munich",
+    "resolved_location": {
+      "name": "Munich",
+      "country": "DE",
+      "latitude": 48.137,
+      "longitude": 11.576
+    },
+    "risk_score": 64,
+    "risk_level": "HIGH",
+    "hazards": [
+      {
+        "kind": "wind",
+        "source": "weather",
+        "evidence": "Synthetic wind gusts 72 km/h"
+      },
+      {
+        "kind": "rain",
+        "source": "weather",
+        "evidence": "Synthetic precipitation 9 mm over one hour"
+      }
+    ],
+    "official_alerts": {
+      "status": "unsupported",
+      "alerts": []
+    },
+    "guidance": {
+      "status": "no_evidence",
+      "citations": []
+    }
+  }
+}
