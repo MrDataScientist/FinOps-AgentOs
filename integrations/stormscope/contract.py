@@ -4,7 +4,7 @@ Only synthetic example data belongs in this public repository. This module does 
 call Stormscope and does not treat generated narrative as authoritative.
 """
 
-from typing import Any, Mapping, Literal
+from typing import Any, Literal, Mapping
 
 from pydantic import BaseModel, ConfigDict, Field
 
