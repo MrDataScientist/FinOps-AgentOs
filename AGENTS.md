@@ -30,3 +30,13 @@ Do not force-push or rewrite already published commits merely to change historic
 - Keep Stormscope's deterministic risk decisions under application control.
 - Require policy checks and human authorization before consequential infrastructure writes.
 - Run tests and lint where feasible before opening or updating a PR.
+
+## Portable task workflows
+
+Read [AI setup](docs/ai-setup.md) for host entry points and project check commands. Load only matching workflows:
+
+- [Bounded task delivery](.github/skills/ai-task-workflow/SKILL.md)
+- [PR title and description](.github/skills/pr-description/SKILL.md)
+- [FinOps-AgentOS validation](.github/skills/finops-policy-validation/SKILL.md)
+
+Existing repository and scoped rules retain their authority. These additions do not grant tool permissions, enable live calls, or authorize merge/deployment. Follow explicit user authorization already given for the requested task.
