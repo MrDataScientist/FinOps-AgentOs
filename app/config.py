@@ -17,6 +17,9 @@ class Settings:
     enable_local_routing: bool = True
     enable_azure_routing: bool = False
     control_plane_api_key: str = ""
+    governance_enabled: bool = False
+    governance_signing_key: str = ""
+    governance_audit_db: str = "artifacts/governance-audit.sqlite3"
     ollama_url: str = "http://localhost:11434"
     ollama_model: str = "qwen2.5-coder:3b"
     azure_endpoint: str = ""
@@ -30,6 +33,16 @@ class Settings:
     def __post_init__(self) -> None:
         if self.local_estimated_usd < 0 or self.azure_estimated_usd < 0:
             raise ValueError("Cost estimates must be nonnegative")
+        if self.governance_enabled:
+            if (len(self.governance_signing_key) < 32
+                    or len(self.control_plane_api_key) < 32):
+                raise ValueError(
+                    "Enabled governance PoC requires strong governance and operator keys"
+                )
+            if self.governance_signing_key == self.control_plane_api_key:
+                raise ValueError("Governance signing key and operator key must be distinct")
+            if not self.governance_audit_db or self.governance_audit_db == ":memory:":
+                raise ValueError("Governance audit requires persistent SQLite path")
         if self.enable_live_execution and len(self.control_plane_api_key) < 24:
             raise ValueError("Live execution requires CONTROL_PLANE_API_KEY of at least 24 chars")
         if self.enable_live_execution and self.enable_azure_routing:
@@ -46,6 +59,11 @@ class Settings:
             enable_local_routing=enabled("ENABLE_LOCAL_ROUTING", True),
             enable_azure_routing=enabled("ENABLE_AZURE_ROUTING"),
             control_plane_api_key=os.getenv("CONTROL_PLANE_API_KEY", ""),
+            governance_enabled=enabled("ENABLE_GOVERNANCE_POC"),
+            governance_signing_key=os.getenv("GOVERNANCE_SIGNING_KEY", ""),
+            governance_audit_db=os.getenv(
+                "GOVERNANCE_AUDIT_DB", "artifacts/governance-audit.sqlite3"
+            ),
             ollama_url=os.getenv("OLLAMA_URL", "http://localhost:11434"),
             ollama_model=os.getenv("OLLAMA_MODEL", "qwen2.5-coder:3b"),
             azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT", ""),

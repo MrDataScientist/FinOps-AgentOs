@@ -28,3 +28,9 @@ flowchart TD
 - No multi-tenant authorization or persistent ledger. Do not deploy this starter publicly without hardening.
 
 The project separates **data-plane requests** from later **FinOps analysis and governed control-plane operations**. Future routing changes must be evaluated against measurable quality, privacy and availability requirements.
+
+## Optional agent governance PoC
+
+A separately enabled, offline governance API tests **human/actor lineage**, down-scoped authorization_details, runtime tool authorization and HMAC-chained SQLite audit metadata. It uses synthetic signed demo identities and an in-process Jira-shaped read-only mock, with no connection to actual MCP tools or production OAuth issuers. The existing inference API behavior is unchanged. See [governance MVP](governance-mvp.md) and [security ADRs](decisions/ADR-003-agent-delegation-and-token-exchange.md).
+
+This PoC is disabled unless explicitly configured, requires distinct signing/operator secrets, and must remain loopback-only. It is not production security, an actual enterprise IdP integration or an immutable audit store.

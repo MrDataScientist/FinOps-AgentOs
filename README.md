@@ -4,7 +4,7 @@
 
 > **Mission:** Help organizations choose approved AI execution paths and demonstrate their **security, reliability, quality and true unit economics**. This is an experimental portfolio project, not a production-ready AI platform or a verified cost-saving product.
 
-[![Python tests](https://github.com/MrDataScientist/FinOps-AgentOs/actions/workflows/ci.yml/badge.svg)](https://github.com/MrDataScientist/FinOps-AgentOs/actions/workflows/ci.yml) · [Architecture](docs/architecture.md) · [Stormscope demo](docs/stormscope-integration.md) · [Evaluation evidence](docs/evaluation-results.md) · [Case study](docs/portfolio-case-study.md)
+[![Python tests](https://github.com/MrDataScientist/FinOps-AgentOs/actions/workflows/ci.yml/badge.svg)](https://github.com/MrDataScientist/FinOps-AgentOs/actions/workflows/ci.yml) · [Architecture](docs/architecture.md) · [Agent governance MVP](docs/governance-mvp.md) · [Roadmap](docs/roadmap.md) · [Stormscope demo](docs/stormscope-integration.md) · [Evaluation evidence](docs/evaluation-results.md) · [Case study](docs/portfolio-case-study.md)
 
 ## The enterprise problem
 
@@ -35,6 +35,7 @@ flowchart TD
 | Opt-in Ollama and Azure OpenAI adapters | **Implemented, not live-benchmarked** | `POST /api/v1/infer` off by default |
 | Stormscope risk-to-explanation contract | **Synthetic reference demo only** | [reproducible walkthrough](docs/stormscope-integration.md) |
 | Token/latency counters and illustrative cost estimates | **Prototype** | In-memory ledger; Prometheus/Grafana example |
+| Local synthetic agent delegation, deny-by-default mock Jira read, HMAC-chained audit | **Optional PoC** | [governance MVP](docs/governance-mvp.md), tests; no real OAuth IdP or MCP transport |
 | Production safety validation, tenant IAM, real cost enforcement, live model evaluation | **Not implemented** | Explicit follow-up work |
 | Self-healing, audited infrastructure mutations, live Stormscope production integration | **Not implemented** | Future architecture and approval gates |
 
@@ -103,11 +104,30 @@ Even when enabled, the response is marked `quality_validated=false`. Model respo
 - Examples contain **only synthetic data**. Keep user locations, sensitive inputs and provider credentials out of committed fixtures, logs and publicly uploaded benchmark reports.
 - FinOps-AgentOS never computes or overrides Stormscope's authoritative weather-risk score.
 
+## AgentOS security governance — first MVP
+
+Three design questions: **Who authorized this agent? What may it do? Can we prove what it did?**
+
+A **disabled-by-default, local-only** governance API demonstrates signed human + agent token exchange (RFC 8693-inspired), exact resource/tool authorization details (RFC 9396-inspired), deny-by-default runtime authorization on **synthetic read-only Jira issues**, and a persistent HMAC-linked SQLite audit trail. It does **not** implement enterprise OAuth/OIDC, actual MCP protocol dispatch, immutable auditing, real Jira access, or production security controls.
+
+Run a complete in-process synthetic demonstration with development dependencies installed:
+
+~~~bash
+python -m app.governance.demo
+python -m pytest -q
+~~~
+
+The demo exercises allowed read, denied write and audit verification without cloud or external API calls. Opt-in HTTP mode requires ENABLE_GOVERNANCE_POC=true, distinct random CONTROL_PLANE_API_KEY and GOVERNANCE_SIGNING_KEY secrets (at least 32 characters each), and a writable GOVERNANCE_AUDIT_DB. Keep it on loopback.
+
+Read [security governance architecture and test boundaries](docs/governance-mvp.md), [authority lineage ADR-003](docs/decisions/ADR-003-agent-delegation-and-token-exchange.md), and [policy/audit ADR-004](docs/decisions/ADR-004-agent-policy-and-audit.md).
+
 ## Roadmap
 
-1. **Current:** repeatable policy evaluations, Stormscope synthetic adapter, explicit routing and observability.
+1. **Current:** repeatable policy evaluations, Stormscope synthetic adapter, explicit routing and observability; optional local delegated authority/audit PoC.
 2. **Next:** opt-in live Ollama/approved cloud model experiments, independent explanation quality labels, cost and latency per accepted result.
-3. **Later:** approved model-routing improvements, reconciled token/compute costs, tenant-level controls and reliable fallbacks.
-4. **Long term:** human-approved infrastructure change proposals, Terraform policy gates, rollback and audited recovery.
+3. **Later:** approved model-routing improvements, reconciled token/compute costs, tenant-level controls, enterprise human/workload identity, MCP enforcement and reliable fallbacks.
+4. **Long term:** A2A governance, human-approved infrastructure change proposals, Terraform/OpenTofu policy gates, independent audit sinks, rollback and audited recovery.
+
+See the [phase-by-phase architecture roadmap](docs/roadmap.md).
 
 [Contributing](CONTRIBUTING.md) · [Gitmoji guidelines](AGENTS.md) · MIT license. Model licenses and cloud-service contracts are separate.
