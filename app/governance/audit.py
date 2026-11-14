@@ -5,7 +5,7 @@ import hmac
 import json
 import sqlite3
 import threading
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
@@ -56,7 +56,7 @@ class AuditStore:
         # Only deliberately selected metadata; never requests, tool args, JWTs, or API keys.
         record = {
             "event_id": str(uuid4()),
-            "occurred_at": datetime.now(timezone.utc).isoformat(),
+            "occurred_at": datetime.now(UTC).isoformat(),
             "event_type": event_type,
             "decision": decision,
             "human_subject": human_subject,

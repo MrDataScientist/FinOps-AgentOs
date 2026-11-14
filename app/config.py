@@ -36,7 +36,9 @@ class Settings:
         if self.governance_enabled:
             if (len(self.governance_signing_key) < 32
                     or len(self.control_plane_api_key) < 32):
-                raise ValueError("Enabled governance PoC requires strong governance and operator keys")
+                raise ValueError(
+                    "Enabled governance PoC requires strong governance and operator keys"
+                )
             if self.governance_signing_key == self.control_plane_api_key:
                 raise ValueError("Governance signing key and operator key must be distinct")
             if not self.governance_audit_db or self.governance_audit_db == ":memory:":
@@ -59,7 +61,9 @@ class Settings:
             control_plane_api_key=os.getenv("CONTROL_PLANE_API_KEY", ""),
             governance_enabled=enabled("ENABLE_GOVERNANCE_POC"),
             governance_signing_key=os.getenv("GOVERNANCE_SIGNING_KEY", ""),
-            governance_audit_db=os.getenv("GOVERNANCE_AUDIT_DB", "artifacts/governance-audit.sqlite3"),
+            governance_audit_db=os.getenv(
+                "GOVERNANCE_AUDIT_DB", "artifacts/governance-audit.sqlite3"
+            ),
             ollama_url=os.getenv("OLLAMA_URL", "http://localhost:11434"),
             ollama_model=os.getenv("OLLAMA_MODEL", "qwen2.5-coder:3b"),
             azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT", ""),

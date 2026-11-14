@@ -55,7 +55,8 @@ def exchange(client, body=None):
 
 def test_disabled_by_default():
     with TestClient(create_app(Settings())) as client:
-        assert client.post("/api/v1/governance/token/exchange", json=request_body()).status_code == 404
+        response = client.post("/api/v1/governance/token/exchange", json=request_body())
+        assert response.status_code == 404
 
 
 def test_enabled_requires_distinct_strong_secrets(tmp_path):
