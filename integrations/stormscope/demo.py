@@ -7,6 +7,7 @@ No outbound traffic or real model inference occurs.
 import argparse
 import asyncio
 import json
+import secrets
 from pathlib import Path
 
 import httpx
@@ -32,14 +33,46 @@ async def run_demo(input_file: Path) -> dict[str, object]:
         data,
         classification=DataClassification.PUBLIC,  # Fixture contains no user data.
     )
-    app = create_app(Settings())
+    demo_key = secrets.token_urlsafe(32)
+    auth_headers = {"X-Control-Plane-Key": demo_key}
+    app = create_app(Settings(control_plane_api_key=demo_key))
+    request = task.model_dump(mode="json")
+    cases = (
+        ("missing_credential", "/api/v1/route/plan", {}, request, 401),
+        ("plan_allowed", "/api/v1/route/plan", auth_headers, request, 200),
+        (
+            "budget_denied",
+            "/api/v1/route/plan",
+            auth_headers,
+            {**request, "max_estimated_cost_usd": "0"},
+            403,
+        ),
+        ("live_execution_denied", "/api/v1/infer", auth_headers, request, 403),
+    )
+    gateway_decisions = []
+    decision = {}
     async with httpx.AsyncClient(
         transport=httpx.ASGITransport(app=app),
         base_url="http://agentos.test",
     ) as client:
-        result = await client.post("/api/v1/route/plan", json=task.model_dump(mode="json"))
-    result.raise_for_status()
-    decision = result.json()
+        for case, endpoint, headers, body, expected_status in cases:
+            result = await client.post(endpoint, headers=headers, json=body)
+            if result.status_code != expected_status:
+                raise RuntimeError(
+                    f"{case}: expected HTTP {expected_status}, got {result.status_code}"
+                )
+            response = result.json()
+            if case == "plan_allowed":
+                decision = response
+            gateway_decisions.append(
+                {
+                    "case": case,
+                    "endpoint": endpoint,
+                    "credential_presented": bool(headers),
+                    "http_status": result.status_code,
+                    "reason": response["reason"] if result.is_success else response["detail"],
+                }
+            )
     return {
         "data_origin": "synthetic",
         "mode": "dry_run_policy_only",
@@ -50,6 +83,7 @@ async def run_demo(input_file: Path) -> dict[str, object]:
         "illustrative_cost_usd": decision["estimated_cost_usd"],
         "cost_basis": decision["cost_basis"],
         "risk_score_unchanged": snapshot.risk_score == data["risk_score"],
+        "gateway_decisions": gateway_decisions,
     }
 
 
