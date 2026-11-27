@@ -3,6 +3,7 @@
 import asyncio
 import json
 from pathlib import Path
+from unittest.mock import AsyncMock
 
 import pytest
 from pydantic import ValidationError
@@ -52,12 +53,24 @@ def test_requires_source_weather_evidence():
         from_weather_risk_response(data, classification=DataClassification.PUBLIC)
 
 
-def test_demo_routes_synthetic_request_only():
+def test_demo_routes_synthetic_request_only(monkeypatch):
+    local = AsyncMock()
+    cloud = AsyncMock()
+    monkeypatch.setattr("app.gateway.api.call_ollama", local)
+    monkeypatch.setattr("app.gateway.api.call_azure", cloud)
     output = asyncio.run(run_demo(FIXTURE))
     assert output["mode"] == "dry_run_policy_only"
     assert output["agentos_route"] == "local"
     assert output["agentos_executable"] is False
     assert output["risk_score_unchanged"] is True
+    assert [(event["case"], event["http_status"]) for event in output["gateway_decisions"]] == [
+        ("missing_credential", 401),
+        ("plan_allowed", 200),
+        ("budget_denied", 403),
+        ("live_execution_denied", 403),
+    ]
+    local.assert_not_called()
+    cloud.assert_not_called()
 
 
 def test_existing_adapter_defaults_internal():

@@ -11,6 +11,8 @@ description: Validate FinOps-AgentOS routing, privacy, inference gates and cost 
 4. Record each acceptance criterion as Pass, Fail or Skipped with observed evidence and the tested revision. Record blocked tools or missing data explicitly. Recheck an unexpected failure once, then distinguish a regression from pre-existing behavior using the code and baseline.
 5. Report remaining gaps and recovery steps. Never promote mock/offline evidence into live-system correctness or production readiness.
 
+For the Stormscope gateway demo, verify the missing-credential rejection, authorized dry-run plan, zero-budget rejection, and disabled live execution. Check that neither inference provider is called and that the risk score and band stay under Stormscope's control. Treat the printed response transcript as local test evidence.
+
 ## Sources
 
 - [app/policies/engine.py](../../../app/policies/engine.py)
